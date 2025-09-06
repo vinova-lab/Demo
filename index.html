@@ -58,6 +58,7 @@
             const [userId, setUserId] = useState(null);
             const [db, setDb] = useState(null);
             const [auth, setAuth] = useState(null);
+            const [message, setMessage] = useState(null);
 
             useEffect(() => {
                 if (Object.keys(firebaseConfig).length === 0) {
@@ -126,10 +127,10 @@
             const handleSubmit = async (e) => {
                 e.preventDefault();
                 if (!title || !description || !author || !db || !userId) {
-                    // Using a message box instead of alert()
-                    alert('Please fill out all fields.');
+                    setMessage('Please fill out all fields.');
                     return;
                 }
+                setMessage(null);
 
                 const blogData = {
                     title,
@@ -183,6 +184,17 @@
 
             return (
                 <div className="min-h-screen p-8">
+                    {message && (
+                        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
+                            <div className="relative bg-white p-8 rounded-lg shadow-xl w-96">
+                                <h3 className="text-xl font-bold text-gray-800 mb-4">Error</h3>
+                                <p className="text-gray-600 mb-6">{message}</p>
+                                <button onClick={() => setMessage(null)} className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+                    )}
                     <div className="max-w-4xl mx-auto">
                         <header className="mb-8 text-center">
                             <h1 className="text-4xl font-extrabold text-blue-600 mb-2 rounded-lg">My Blogosphere</h1>
