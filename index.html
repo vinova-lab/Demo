@@ -44,15 +44,19 @@
     <script type="text/babel">
         // Global variables provided by the Canvas environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        let firebaseConfig = {};
-        if (typeof __firebase_config === 'string') {
-          try {
-            firebaseConfig = JSON.parse(__firebase_config);
-          } catch (e) {
-            console.error('Failed to parse Firebase config:', e);
-          }
-        }
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        // YOUR FIREBASE CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyB-4qBXoBfWU1Nf1QQai2qFRCCudtWZwbc",
+            authDomain: "fir-9e84f.firebaseapp.com",
+            projectId: "fir-9e84f",
+            storageBucket: "fir-9e84f.firebasestorage.app",
+            messagingSenderId: "664188446878",
+            appId: "1:664188446878:web:60527a51a3b61f3582738f",
+            measurementId: "G-HWFXER0FSS"
+        };
+        console.log("Using Firebase config:", firebaseConfig);
 
         const { useState, useEffect } = React;
         const { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } = firebase;
@@ -90,11 +94,9 @@
                             setIsAuthReady(true);
                         } else {
                             try {
-                                if (initialAuthToken) {
-                                    await signInWithCustomToken(authentication, initialAuthToken);
-                                } else {
-                                    await signInAnonymously(authentication);
-                                }
+                                // When using a custom Firebase config, the Canvas custom token will not be valid.
+                                // We'll sign in anonymously instead to keep the app working.
+                                await signInAnonymously(authentication);
                             } catch (error) {
                                 console.error('Authentication error:', error);
                                 setIsAuthReady(true);
@@ -110,7 +112,10 @@
             }, []);
 
             useEffect(() => {
-                if (!db || !isAuthReady) return;
+                if (!db || !isAuthReady || !userId) {
+                    setLoading(false);
+                    return;
+                }
 
                 const blogsCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'blog_posts');
 
