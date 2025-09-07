@@ -126,7 +126,7 @@
 
             const handleSubmit = async (e) => {
                 e.preventDefault();
-                if (!title || !description || !author || !db || !userId) {
+                if (!title || !description || !author) {
                     setMessage('Please fill out all fields.');
                     return;
                 }
