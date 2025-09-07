@@ -37,12 +37,21 @@
 </head>
 <body class="min-h-screen bg-gray-100 font-sans antialiased text-gray-900">
 
-    <div id="root"></div>
+    <div id="root">
+        <pre id="firebase-config-display" class="hidden"></pre>
+    </div>
 
     <script type="text/babel">
         // Global variables provided by the Canvas environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        let firebaseConfig = {};
+        if (typeof __firebase_config === 'string') {
+          try {
+            firebaseConfig = JSON.parse(__firebase_config);
+          } catch (e) {
+            console.error('Failed to parse Firebase config:', e);
+          }
+        }
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         const { useState, useEffect } = React;
